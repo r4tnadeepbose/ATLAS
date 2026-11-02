@@ -145,8 +145,8 @@ export function DashboardPage() {
               <Skeleton className="mx-2 h-[200px]" />
             ) : trendData.length ? (
               <div className="flex h-full flex-col">
-                <div className="h-1/2"><TrendArea data={trendData} dataKey="posture" xKey="week" color="#36D399" height={145} yDomain={[0, 100]} /></div>
-                <div className="h-1/2"><TrendArea data={trendData} dataKey="open_findings" xKey="week" color="#38BDF8" height={145} /></div>
+                <div className="h-1/2"><TrendArea data={trendData} dataKey="posture" xKey="week" color="rgb(var(--atlas-accent))" height={145} yDomain={[0, 100]} /></div>
+                <div className="h-1/2"><TrendArea data={trendData} dataKey="open_findings" xKey="week" color="rgb(var(--atlas-cyan))" height={145} /></div>
               </div>
             ) : (
               <EmptyState title="Posture history appears after findings are triaged" className="py-8" />
@@ -160,10 +160,10 @@ export function DashboardPage() {
           {trends.isLoading ? <Skeleton className="mx-2 h-[210px]" /> : <SeverityStackedBars data={discovery} />}
         </ChartFrame>
         <ChartFrame title="Asset exposure" description="Internet-facing versus internal estate" height={240} className="xl:col-span-3">
-          <HorizontalBars data={exposure} dataKey="value" labelKey="name" color="#38BDF8" height={205} />
+          <HorizontalBars data={exposure} dataKey="value" labelKey="name" color="rgb(var(--atlas-cyan))" height={205} />
         </ChartFrame>
         <ChartFrame title="Risk by business unit" description="Finding volume weighted by severity" height={240} className="xl:col-span-3">
-          <HorizontalBars data={businessUnits.map((unit: any) => ({ ...unit, value: unit.total }))} dataKey="value" labelKey="business_unit" color="#FB923C" height={205} />
+          <HorizontalBars data={businessUnits.map((unit: any) => ({ ...unit, value: unit.total }))} dataKey="value" labelKey="business_unit" color="rgb(var(--atlas-high))" height={205} />
         </ChartFrame>
       </div>
 
@@ -243,7 +243,7 @@ export function DashboardPage() {
             {apiSecurity.length ? (
               <div className="pt-1">
                 <p className="label mb-1.5">API security posture</p>
-                <HorizontalBars data={apiSecurity.map((item: any) => ({ ...item, name: humanize(item.name) }))} dataKey="value" labelKey="name" color="#36D399" height={110} />
+                <HorizontalBars data={apiSecurity.map((item: any) => ({ ...item, name: humanize(item.name) }))} dataKey="value" labelKey="name" color="rgb(var(--atlas-accent))" height={110} />
               </div>
             ) : null}
           </div>

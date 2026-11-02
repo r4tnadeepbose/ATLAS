@@ -153,7 +153,7 @@ export function Sidebar({
                     cn(
                       "group flex items-center gap-2.5 rounded-md px-2 py-1.5 text-[13px] transition-colors",
                       isActive
-                        ? "bg-accent/10 text-ink shadow-[inset_2px_0_0_0_#36D399]"
+                        ? "bg-accent/10 text-ink shadow-[inset_2px_0_0_0_rgb(var(--atlas-accent))]"
                         : "text-muted hover:bg-raised/70 hover:text-ink",
                       collapsed && "justify-center px-0",
                     )

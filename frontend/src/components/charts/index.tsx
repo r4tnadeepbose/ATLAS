@@ -23,27 +23,31 @@ import { cn } from "@/utils";
 import { EmptyState } from "@/components/ui/primitives";
 
 export const SEVERITY_COLORS: Record<string, string> = {
-  critical: "#F87171",
-  high: "#FB923C",
-  medium: "#FBBF24",
-  low: "#38BDF8",
-  info: "#94A3B8",
-  unknown: "#64748B",
+  critical: "rgb(var(--atlas-critical))",
+  high: "rgb(var(--atlas-high))",
+  medium: "rgb(var(--atlas-medium))",
+  low: "rgb(var(--atlas-low))",
+  info: "rgb(var(--atlas-info))",
+  unknown: "rgb(var(--atlas-muted))",
 };
 
-const AXIS = { stroke: "#64748B", fontSize: 10, tickLine: false, axisLine: false };
+export const CHART_ACCENT = "rgb(var(--atlas-accent))";
+export const CHART_CYAN = "rgb(var(--atlas-cyan))";
+export const CHART_HIGH = "rgb(var(--atlas-high))";
+
+const AXIS = { stroke: "rgb(var(--atlas-axis))", fontSize: 10, tickLine: false, axisLine: false };
 
 const tooltipStyle = {
   contentStyle: {
-    background: "#111821",
-    border: "1px solid #2F4052",
+    background: "rgb(var(--atlas-panel))",
+    border: "1px solid rgb(var(--atlas-border-strong))",
     borderRadius: 6,
     fontSize: 11,
-    color: "#E5E7EB",
-    boxShadow: "0 8px 24px rgba(0,0,0,0.45)",
+    color: "rgb(var(--atlas-ink))",
+    boxShadow: "var(--atlas-tooltip-shadow)",
   },
-  labelStyle: { color: "#8995A5", fontSize: 10, marginBottom: 2 },
-  itemStyle: { fontSize: 11 },
+  labelStyle: { color: "rgb(var(--atlas-muted))", fontSize: 10, marginBottom: 2 },
+  itemStyle: { fontSize: 11, color: "rgb(var(--atlas-ink))" },
 };
 
 export function ChartFrame({ title, action, children, height = 220, description, className }: { title: string; action?: ReactNode; children: ReactNode; height?: number; description?: string; className?: string }) {
@@ -77,11 +81,11 @@ export function SeverityDonut({ data, height = 220 }: { data: { severity?: strin
           innerRadius="58%"
           outerRadius="82%"
           paddingAngle={2}
-          stroke="#0B0F14"
+          stroke="rgb(var(--atlas-base))"
           strokeWidth={2}
         >
           {data.map((entry) => (
-            <Cell key={entry.severity ?? entry.name} fill={SEVERITY_COLORS[entry.severity ?? entry.name ?? "info"] || "#64748B"} />
+            <Cell key={entry.severity ?? entry.name} fill={SEVERITY_COLORS[entry.severity ?? entry.name ?? "info"] || "rgb(var(--atlas-muted))"} />
           ))}
         </Pie>
         <Tooltip {...tooltipStyle} />
@@ -99,7 +103,7 @@ export function SeverityLegend({ data }: { data: { severity?: string; name?: str
         const value = item.count ?? item.value ?? 0;
         return (
           <div key={key} className="flex items-center gap-2 text-2xs">
-            <span className="h-1.5 w-1.5 rounded-full" style={{ background: SEVERITY_COLORS[key] || "#64748B" }} />
+            <span className="h-1.5 w-1.5 rounded-full" style={{ background: SEVERITY_COLORS[key] || "rgb(var(--atlas-muted))" }} />
             <span className="flex-1 capitalize text-muted">{key}</span>
             <span className="tabular-nums text-ink">{value}</span>
             <span className="w-9 text-right tabular-nums text-muted">{Math.round((value / total) * 100)}%</span>
@@ -114,7 +118,7 @@ export function TrendArea({
   data,
   dataKey,
   xKey,
-  color = "#36D399",
+  color = CHART_ACCENT,
   height = 220,
   yDomain,
   formatter,
@@ -137,7 +141,7 @@ export function TrendArea({
             <stop offset="100%" stopColor={color} stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid stroke="#243140" strokeDasharray="2 4" vertical={false} />
+        <CartesianGrid stroke="rgb(var(--atlas-grid))" strokeDasharray="2 4" vertical={false} />
         <XAxis dataKey={xKey} {...AXIS} tickFormatter={(value) => String(value).slice(5)} />
         <YAxis {...AXIS} domain={yDomain} width={42} tickFormatter={formatter} />
         <Tooltip {...tooltipStyle} formatter={(value: any) => [formatter ? formatter(Number(value)) : value, dataKey]} />
@@ -152,11 +156,11 @@ export function SeverityStackedBars({ data, xKey = "date", height = 220 }: { dat
   return (
     <ResponsiveContainer width="100%" height={height}>
       <BarChart data={data} margin={{ top: 8, right: 10, left: -20, bottom: 0 }} barSize={14}>
-        <CartesianGrid stroke="#243140" strokeDasharray="2 4" vertical={false} />
+        <CartesianGrid stroke="rgb(var(--atlas-grid))" strokeDasharray="2 4" vertical={false} />
         <XAxis dataKey={xKey} {...AXIS} tickFormatter={(value) => String(value).slice(5)} />
         <YAxis {...AXIS} width={34} allowDecimals={false} />
         <Tooltip {...tooltipStyle} />
-        <Legend wrapperStyle={{ fontSize: 10, color: "#8995A5" }} iconSize={7} />
+        <Legend wrapperStyle={{ fontSize: 10, color: "rgb(var(--atlas-muted))" }} iconSize={7} />
         {(["critical", "high", "medium", "low", "info"] as const).map((severity) => (
           <Bar isAnimationActive={false} key={severity} dataKey={severity} stackId="a" fill={SEVERITY_COLORS[severity]} radius={[0, 0, 0, 0]} />
         ))}
@@ -169,7 +173,7 @@ export function HorizontalBars({
   data,
   dataKey = "value",
   labelKey = "name",
-  color = "#38BDF8",
+  color = CHART_CYAN,
   height = 220,
   onBarClick,
 }: {
@@ -184,10 +188,10 @@ export function HorizontalBars({
   return (
     <ResponsiveContainer width="100%" height={height}>
       <BarChart data={data} layout="vertical" margin={{ top: 4, right: 16, left: 4, bottom: 0 }} barSize={12}>
-        <CartesianGrid stroke="#243140" strokeDasharray="2 4" horizontal={false} />
+        <CartesianGrid stroke="rgb(var(--atlas-grid))" strokeDasharray="2 4" horizontal={false} />
         <XAxis type="number" {...AXIS} allowDecimals={false} />
-        <YAxis type="category" dataKey={labelKey} {...AXIS} width={118} tick={{ fill: "#8995A5", fontSize: 10 }} />
-        <Tooltip {...tooltipStyle} cursor={{ fill: "rgba(54,211,153,0.05)" }} />
+        <YAxis type="category" dataKey={labelKey} {...AXIS} width={118} tick={{ fill: "rgb(var(--atlas-muted))", fontSize: 10 }} />
+        <Tooltip {...tooltipStyle} cursor={{ fill: "rgb(var(--atlas-accent) / 0.06)" }} />
         <Bar isAnimationActive={false} dataKey={dataKey} fill={color} radius={[0, 3, 3, 0]} onClick={onBarClick}>
           {data.map((entry, index) => (
             <Cell key={index} fill={entry.color || color} />
@@ -203,11 +207,11 @@ export function TrendLines({ data, series, xKey = "date", height = 220 }: { data
   return (
     <ResponsiveContainer width="100%" height={height}>
       <LineChart data={data} margin={{ top: 8, right: 10, left: -20, bottom: 0 }}>
-        <CartesianGrid stroke="#243140" strokeDasharray="2 4" vertical={false} />
+        <CartesianGrid stroke="rgb(var(--atlas-grid))" strokeDasharray="2 4" vertical={false} />
         <XAxis dataKey={xKey} {...AXIS} />
         <YAxis {...AXIS} width={40} />
         <Tooltip {...tooltipStyle} />
-        <Legend wrapperStyle={{ fontSize: 10, color: "#8995A5" }} iconSize={7} />
+        <Legend wrapperStyle={{ fontSize: 10, color: "rgb(var(--atlas-muted))" }} iconSize={7} />
         {series.map((item) => (
           <Line isAnimationActive={false} key={item.key} type="monotone" dataKey={item.key} name={item.label} stroke={item.color} strokeWidth={1.5} dot={false} />
         ))}
@@ -217,13 +221,13 @@ export function TrendLines({ data, series, xKey = "date", height = 220 }: { data
 }
 
 export function PostureGauge({ score, height = 180 }: { score: number; height?: number }) {
-  const color = score >= 75 ? "#36D399" : score >= 50 ? "#FBBF24" : "#F87171";
+  const color = score >= 75 ? CHART_ACCENT : score >= 50 ? SEVERITY_COLORS.medium : SEVERITY_COLORS.critical;
   return (
     <div className="relative" style={{ height }}>
       <ResponsiveContainer width="100%" height={height}>
         <RadialBarChart innerRadius="72%" outerRadius="100%" barSize={14} data={[{ value: score, fill: color }]} startAngle={210} endAngle={-30}>
           <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
-          <RadialBar isAnimationActive={false} dataKey="value" cornerRadius={8} background={{ fill: "#1A2430" }} />
+          <RadialBar isAnimationActive={false} dataKey="value" cornerRadius={8} background={{ fill: "rgb(var(--atlas-raised))" }} />
         </RadialBarChart>
       </ResponsiveContainer>
       <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center pt-4">

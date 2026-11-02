@@ -11,11 +11,13 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
+  Moon,
   Search,
   ServerCog,
   Settings,
   ShieldAlert,
   ShieldCheck,
+  Sun,
   UserCircle2,
   Waypoints,
   X,
@@ -23,6 +25,7 @@ import {
 import { cn, initials, relativeTime } from "@/utils";
 import { useAuth } from "@/context/AuthContext";
 import { useEnvironment } from "@/context/EnvironmentContext";
+import { useTheme } from "@/context/ThemeContext";
 import { notificationApi, dashboardApi } from "@/api/endpoints";
 import { Badge, Button, SeverityBadge, StatusBadge } from "@/components/ui/primitives";
 
@@ -41,6 +44,7 @@ const QUICK_LINKS = [
 export function Topbar({ onOpenNav }: { onOpenNav: () => void }) {
   const { user, logout } = useAuth();
   const { environments, selectedEnvironmentId, setSelectedEnvironmentId } = useEnvironment();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchOpen, setSearchOpen] = useState(false);
@@ -136,6 +140,16 @@ export function Topbar({ onOpenNav }: { onOpenNav: () => void }) {
             </select>
           </div>
         </div>
+
+        <button
+          onClick={toggleTheme}
+          data-topbar-popover
+          className="rounded-md border border-border bg-surface/70 p-1.5 text-muted hover:text-ink"
+          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          title={theme === "dark" ? "Light mode" : "Dark mode"}
+        >
+          {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        </button>
 
         <button
           onClick={() => {

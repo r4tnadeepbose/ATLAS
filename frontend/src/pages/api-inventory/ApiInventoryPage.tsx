@@ -128,11 +128,11 @@ export function ApiInventoryPage() {
         <div className="space-y-4">
           <Card>
             <CardHeader title="Open API issues" description="Static specification checks" />
-            <div className="p-3"><HorizontalBars data={[...(dashboard.data?.checks ?? [])].sort((a: any, b: any) => b.value - a.value).map((item: any) => ({ ...item, name: CHECK_LABELS[item.name] || humanize(item.name) }))} dataKey="value" labelKey="name" color="#FB923C" height={180} /></div>
+            <div className="p-3"><HorizontalBars data={[...(dashboard.data?.checks ?? [])].sort((a: any, b: any) => b.value - a.value).map((item: any) => ({ ...item, name: CHECK_LABELS[item.name] || humanize(item.name) }))} dataKey="value" labelKey="name" color="rgb(var(--atlas-high))" height={180} /></div>
           </Card>
           <Card>
             <CardHeader title="Authentication schemes" description="Inventory distribution" />
-            <div className="p-3"><HorizontalBars data={(dashboard.data?.by_auth ?? []).map((item: any) => ({ ...item, name: humanize(item.name) }))} dataKey="value" labelKey="name" color="#36D399" height={140} /></div>
+            <div className="p-3"><HorizontalBars data={(dashboard.data?.by_auth ?? []).map((item: any) => ({ ...item, name: humanize(item.name) }))} dataKey="value" labelKey="name" color="rgb(var(--atlas-accent))" height={140} /></div>
           </Card>
         </div>
       </div>

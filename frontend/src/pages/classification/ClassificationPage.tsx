@@ -141,11 +141,11 @@ export function ClassificationPage() {
         <div className="space-y-4">
           <Card>
             <CardHeader title="By category" description="Detected data classes" />
-            <div className="p-3"><HorizontalBars data={(dashboard.data?.by_category ?? []).map((item: any) => ({ ...item, name: categoryLabel(item.name) }))} dataKey="value" labelKey="name" color="#36D399" height={170} /></div>
+            <div className="p-3"><HorizontalBars data={(dashboard.data?.by_category ?? []).map((item: any) => ({ ...item, name: categoryLabel(item.name) }))} dataKey="value" labelKey="name" color="rgb(var(--atlas-accent))" height={170} /></div>
           </Card>
           <Card>
             <CardHeader title="Detection method" description="Rule type coverage" />
-            <div className="p-3"><HorizontalBars data={(dashboard.data?.by_method ?? []).map((item: any) => ({ ...item, name: humanize(item.name) }))} dataKey="value" labelKey="name" color="#38BDF8" height={130} /></div>
+            <div className="p-3"><HorizontalBars data={(dashboard.data?.by_method ?? []).map((item: any) => ({ ...item, name: humanize(item.name) }))} dataKey="value" labelKey="name" color="rgb(var(--atlas-cyan))" height={130} /></div>
           </Card>
         </div>
       </div>
