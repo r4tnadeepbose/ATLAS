@@ -1,0 +1,48 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialVersionUID": "urn:uuid:3f0f1f1e-demo-sbom-atlas",
+  "metadata": {
+    "timestamp": "2026-11-02T09:00:00Z",
+    "component": {
+      "bom-ref": "demo-payment-api",
+      "type": "application",
+      "name": "demo-payment-api",
+      "version": "1.0.0"
+    },
+    "tools": [{ "vendor": "ATLAS", "name": "sample" }]
+  },
+  "components": [
+    {
+      "bom-ref": "pkg:npm/lodash@4.17.20",
+      "type": "library",
+      "name": "lodash",
+      "version": "4.17.20",
+      "purl": "pkg:npm/lodash@4.17.20",
+      "supplier": { "name": "OpenJS Foundation" },
+      "licenses": [{ "license": { "id": "MIT" } }]
+    },
+    {
+      "bom-ref": "pkg:npm/cross-spawn@7.0.3",
+      "type": "library",
+      "name": "cross-spawn",
+      "version": "7.0.3",
+      "purl": "pkg:npm/cross-spawn@7.0.3",
+      "licenses": [{ "license": { "id": "MIT" } }]
+    },
+    {
+      "bom-ref": "pkg:npm/express@4.18.2",
+      "type": "library",
+      "name": "express",
+      "version": "4.18.2",
+      "purl": "pkg:npm/express@4.18.2",
+      "licenses": [{ "license": { "id": "MIT" } }]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "demo-payment-api",
+      "dependsOn": ["pkg:npm/lodash@4.17.20", "pkg:npm/cross-spawn@7.0.3", "pkg:npm/express@4.18.2"]
+    }
+  ]
+}

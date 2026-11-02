@@ -1,0 +1,51 @@
+openapi: 3.0.3
+info:
+  title: ATLAS Sample Payments API
+  version: 1.0.0
+  description: Sample specification for verifying API inventory import and checks.
+servers:
+  - url: http://legacy-api.example.test
+security:
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+paths:
+  /v1/payments:
+    post:
+      summary: Create a payment
+      security:
+        - bearerAuth: []
+      responses:
+        "201":
+          description: Created
+  /v1/payments/{id}:
+    get:
+      summary: Retrieve a payment
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /v1/admin/reconciliation:
+    get:
+      summary: Reconciliation export
+      security: []
+      responses:
+        "200":
+          description: OK
+  /swagger.json:
+    get:
+      summary: Exposed documentation
+      security: []
+      responses:
+        "200":
+          description: OK

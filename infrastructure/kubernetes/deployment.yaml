@@ -1,0 +1,302 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: atlas
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: atlas-config
+  namespace: atlas
+data:
+  ATLAS_APP_ENV: "production"
+  ATLAS_DEBUG: "false"
+  ATLAS_REDIS_URL: "redis://redis:6379/0"
+  ATLAS_RABBITMQ_URL: "amqp://atlas:CHANGE_ME@rabbitmq:5672//"
+  ATLAS_CELERY_ALWAYS_EAGER: "false"
+  ATLAS_CORS_ORIGINS: "https://atlas.example.com"
+  ATLAS_ALLOWED_HOSTS: "atlas.example.com,atlas-api"
+  ATLAS_REQUIRE_SCAN_AUTHORIZATION: "true"
+  ATLAS_AI_PROVIDER: "none"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: atlas-secrets
+  namespace: atlas
+type: Opaque
+stringData:
+  ATLAS_SECRET_KEY: "CHANGE_ME_48_BYTE_RANDOM"
+  ATLAS_DATABASE_URL: "postgresql+psycopg://atlas:CHANGE_ME@postgres:5432/atlas"
+  POSTGRES_PASSWORD: "CHANGE_ME"
+  RABBITMQ_DEFAULT_PASS: "CHANGE_ME"
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: atlas
+spec:
+  serviceName: postgres
+  replicas: 1
+  selector:
+    matchLabels: { app: postgres }
+  template:
+    metadata:
+      labels: { app: postgres }
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          ports: [{ containerPort: 5432 }]
+          env:
+            - name: POSTGRES_DB
+              value: atlas
+            - name: POSTGRES_USER
+              value: atlas
+            - name: POSTGRES_PASSWORD
+              valueFrom: { secretKeyRef: { name: atlas-secrets, key: POSTGRES_PASSWORD } }
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests: { cpu: 250m, memory: 512Mi }
+            limits: { cpu: "2", memory: 2Gi }
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 50Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: atlas
+spec:
+  selector: { app: postgres }
+  ports: [{ port: 5432, targetPort: 5432 }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: atlas
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: redis }
+  template:
+    metadata:
+      labels: { app: redis }
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          args: ["--appendonly", "yes"]
+          ports: [{ containerPort: 6379 }]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: atlas
+spec:
+  selector: { app: redis }
+  ports: [{ port: 6379, targetPort: 6379 }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  namespace: atlas
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: rabbitmq }
+  template:
+    metadata:
+      labels: { app: rabbitmq }
+    spec:
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:3.13-alpine
+          ports:
+            - { containerPort: 5672 }
+            - { containerPort: 15672 }
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: atlas
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom: { secretKeyRef: { name: atlas-secrets, key: RABBITMQ_DEFAULT_PASS } }
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/rabbitmq
+      volumes:
+        - name: data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  namespace: atlas
+spec:
+  selector: { app: rabbitmq }
+  ports:
+    - { name: amqp, port: 5672, targetPort: 5672 }
+    - { name: management, port: 15672, targetPort: 15672 }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atlas-api
+  namespace: atlas
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: atlas-api }
+  template:
+    metadata:
+      labels: { app: atlas-api }
+    spec:
+      containers:
+        - name: api
+          image: atlas/backend:1.0.0
+          ports: [{ containerPort: 8000 }]
+          envFrom:
+            - configMapRef: { name: atlas-config }
+            - secretRef: { name: atlas-secrets }
+          readinessProbe:
+            httpGet: { path: /health/ready, port: 8000 }
+            initialDelaySeconds: 15
+          livenessProbe:
+            httpGet: { path: /health/live, port: 8000 }
+            initialDelaySeconds: 30
+          resources:
+            requests: { cpu: 250m, memory: 512Mi }
+            limits: { cpu: "2", memory: 2Gi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: atlas-api
+  namespace: atlas
+spec:
+  selector: { app: atlas-api }
+  ports: [{ port: 8000, targetPort: 8000 }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atlas-worker
+  namespace: atlas
+spec:
+  replicas: 3
+  selector:
+    matchLabels: { app: atlas-worker }
+  template:
+    metadata:
+      labels: { app: atlas-worker }
+    spec:
+      containers:
+        - name: worker
+          image: atlas/backend:1.0.0
+          command: ["celery", "-A", "app.workers.celery_app.celery_app", "worker", "--loglevel=INFO", "--concurrency=4"]
+          envFrom:
+            - configMapRef: { name: atlas-config }
+            - secretRef: { name: atlas-secrets }
+          resources:
+            requests: { cpu: 500m, memory: 1Gi }
+            limits: { cpu: "2", memory: 3Gi }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atlas-beat
+  namespace: atlas
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: atlas-beat }
+  template:
+    metadata:
+      labels: { app: atlas-beat }
+    spec:
+      containers:
+        - name: beat
+          image: atlas/backend:1.0.0
+          command: ["celery", "-A", "app.workers.celery_app.celery_app", "beat", "--loglevel=INFO"]
+          envFrom:
+            - configMapRef: { name: atlas-config }
+            - secretRef: { name: atlas-secrets }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atlas-frontend
+  namespace: atlas
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: atlas-frontend }
+  template:
+    metadata:
+      labels: { app: atlas-frontend }
+    spec:
+      containers:
+        - name: web
+          image: atlas/frontend:1.0.0
+          ports: [{ containerPort: 80 }]
+          readinessProbe:
+            httpGet: { path: /healthz, port: 80 }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: atlas-frontend
+  namespace: atlas
+spec:
+  selector: { app: atlas-frontend }
+  ports: [{ port: 80, targetPort: 80 }]
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: atlas
+  namespace: atlas
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "25m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: ["atlas.example.com"]
+      secretName: atlas-tls
+  rules:
+    - host: atlas.example.com
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: atlas-api
+                port:
+                  number: 8000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: atlas-frontend
+                port:
+                  number: 80
