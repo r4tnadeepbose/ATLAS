@@ -78,6 +78,14 @@ Data Classification, Vulnerability Management, Risk Management and Reports.
 
 ---
 
+## Dark and light mode
+
+Use the **sun / moon button** in the top bar (also available at the top-right of
+the sign-in screen). The choice is saved in the browser and restored on the next
+visit. The dark theme is the default.
+
+---
+
 ## Stopping ATLAS
 
 Press **`Ctrl+C`** in the launcher window. The launcher stops the API and UI it
