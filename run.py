@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2026 ATLAS Security Orchestration
+
 """ATLAS one-click launcher.
 
 Double-click run.bat (Windows) or execute this file to:
