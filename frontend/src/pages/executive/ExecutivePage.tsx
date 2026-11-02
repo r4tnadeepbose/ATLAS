@@ -49,8 +49,8 @@ export function ExecutivePage() {
             <ChartFrame title="Security trend" description="Posture and open findings" height={280}>
               {(data.posture_trend ?? []).length ? (
                 <div className="flex h-full flex-col">
-                  <div className="h-1/2"><TrendArea data={data.posture_trend} dataKey="posture" xKey="week" color="#36D399" height={125} yDomain={[0, 100]} /></div>
-                  <div className="h-1/2"><TrendArea data={data.posture_trend} dataKey="open_findings" xKey="week" color="#38BDF8" height={125} /></div>
+                  <div className="h-1/2"><TrendArea data={data.posture_trend} dataKey="posture" xKey="week" color="rgb(var(--atlas-accent))" height={125} yDomain={[0, 100]} /></div>
+                  <div className="h-1/2"><TrendArea data={data.posture_trend} dataKey="open_findings" xKey="week" color="rgb(var(--atlas-cyan))" height={125} /></div>
                 </div>
               ) : <p className="px-3 text-xs text-muted">Trend appears after several weeks of data.</p>}
             </ChartFrame>
@@ -112,7 +112,7 @@ export function ExecutivePage() {
             <RemediationBars data={data.remediation ?? []} />
           </ChartFrame>
           <ChartFrame title="Risk score trend" description="Average assessment score over time" height={220}>
-            <TrendLines data={data.risk_trends ?? []} series={[{ key: "average_score", color: "#FB923C", label: "Average score" }]} />
+            <TrendLines data={data.risk_trends ?? []} series={[{ key: "average_score", color: "rgb(var(--atlas-high))", label: "Average score" }]} />
           </ChartFrame>
         </div>
 

@@ -14,10 +14,10 @@ import type { GraphEdge, GraphNode, Microservice } from "@/types";
 import { useGraphLayout, placeLabels } from "./layout";
 
 const RISK_COLORS: Record<string, string> = {
-  critical: "#F87171",
-  high: "#FB923C",
-  medium: "#FBBF24",
-  low: "#38BDF8",
+  critical: "rgb(var(--atlas-critical))",
+  high: "rgb(var(--atlas-high))",
+  medium: "rgb(var(--atlas-medium))",
+  low: "rgb(var(--atlas-low))",
 };
 
 export function MicroservicesPage() {
@@ -91,7 +91,7 @@ function ServiceMap() {
                 <svg viewBox="0 0 1200 680" className="h-[520px] w-full" role="img" aria-label="Microservice dependency graph">
                   <defs>
                     <marker id="arrow" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2F4052" />
+                      <path d="M 0 0 L 10 5 L 0 10 z" fill="rgb(var(--atlas-border-strong))" />
                     </marker>
                   </defs>
                   {edges.map((edge) => {
@@ -106,7 +106,7 @@ function ServiceMap() {
                         y1={source.y}
                         x2={target.x}
                         y2={target.y}
-                        stroke={highlighted ? "#3C5268" : "#1E2A36"}
+                        stroke={highlighted ? "rgb(var(--atlas-border-strong))" : "rgb(var(--atlas-border))"}
                         strokeWidth={highlighted ? 1.1 : 0.7}
                         markerEnd="url(#arrow)"
                       />
@@ -115,7 +115,7 @@ function ServiceMap() {
                   {nodes.map((node) => {
                     const position = positions.get(node.id);
                     if (!position) return null;
-                    const color = node.external ? "#64748B" : RISK_COLORS[node.risk_level || "low"] || "#38BDF8";
+                    const color = node.external ? "rgb(var(--atlas-muted))" : RISK_COLORS[node.risk_level || "low"] || "rgb(var(--atlas-cyan))";
                     const isSelected = selected === node.id;
                     const label = labels.get(node.id);
                     const showLabel = isSelected || Boolean(label?.visible);
@@ -123,15 +123,15 @@ function ServiceMap() {
                       <g key={node.id} transform={`translate(${position.x}, ${position.y})`} onClick={() => setSelected(isSelected ? null : node.id)} onDoubleClick={() => !node.external && navigate(`/microservices/${node.id}`)} className="cursor-pointer">
                         <title>{node.label}{node.open_findings ? ` — ${node.open_findings} open finding${node.open_findings === 1 ? "" : "s"}` : ""}</title>
                         {isSelected ? <circle r={20} fill={color} opacity={0.12} /> : null}
-                        <circle r={node.external ? 5 : 8} fill={color} stroke="#0B0F14" strokeWidth={2} opacity={node.external ? 0.7 : 1} />
+                        <circle r={node.external ? 5 : 8} fill={color} stroke="rgb(var(--atlas-base))" strokeWidth={2} opacity={node.external ? 0.7 : 1} />
                         {showLabel && label ? (
-                          <text x={label.x - position.x} y={label.y - position.y} textAnchor={label.anchor} fill={isSelected ? "#E5E7EB" : "#8995A5"} fontSize={node.external ? 10 : 11} fontWeight={isSelected ? 600 : 500}>
+                          <text x={label.x - position.x} y={label.y - position.y} textAnchor={label.anchor} fill={isSelected ? "rgb(var(--atlas-ink))" : "rgb(var(--atlas-muted))"} fontSize={node.external ? 10 : 11} fontWeight={isSelected ? 600 : 500}>
                             {node.label.length > 24 ? `${node.label.slice(0, 23)}…` : node.label}
                           </text>
                         ) : null}
                         {!node.external && node.open_findings > 0 ? (
                           <g transform="translate(10,-8)">
-                            <circle r={6.5} fill="#111821" stroke={color} strokeWidth={1} />
+                            <circle r={6.5} fill="rgb(var(--atlas-panel))" stroke={color} strokeWidth={1} />
                             <text y={2.5} textAnchor="middle" fill={color} fontSize={8} fontWeight={700}>{node.open_findings}</text>
                           </g>
                         ) : null}

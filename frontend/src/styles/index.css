@@ -5,6 +5,62 @@
 @layer base {
   :root {
     color-scheme: dark;
+
+    --atlas-base: 11 15 20;
+    --atlas-surface: 17 24 33;
+    --atlas-panel: 21 29 39;
+    --atlas-raised: 26 36 48;
+    --atlas-border: 36 49 64;
+    --atlas-border-strong: 47 64 82;
+    --atlas-accent: 54 211 153;
+    --atlas-accent-dim: 31 143 104;
+    --atlas-on-accent: 4 18 12;
+    --atlas-cyan: 56 189 248;
+    --atlas-ink: 229 231 235;
+    --atlas-muted: 137 149 165;
+    --atlas-critical: 248 113 113;
+    --atlas-high: 251 146 60;
+    --atlas-medium: 251 191 36;
+    --atlas-low: 56 189 248;
+    --atlas-info: 148 163 184;
+
+    --atlas-axis: 100 116 139;
+    --atlas-grid: 36 49 64;
+    --atlas-shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 8px 24px rgba(0, 0, 0, 0.28);
+    --atlas-tooltip-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    --atlas-scroll-track: 11 15 20;
+    --atlas-scroll-thumb: 38 50 63;
+    --atlas-scroll-thumb-hover: 51 68 86;
+  }
+
+  .light {
+    color-scheme: light;
+
+    --atlas-base: 244 246 249;
+    --atlas-surface: 255 255 255;
+    --atlas-panel: 255 255 255;
+    --atlas-raised: 238 241 245;
+    --atlas-border: 226 232 240;
+    --atlas-border-strong: 203 213 225;
+    --atlas-accent: 5 150 105;
+    --atlas-accent-dim: 4 120 87;
+    --atlas-on-accent: 255 255 255;
+    --atlas-cyan: 2 132 199;
+    --atlas-ink: 15 23 42;
+    --atlas-muted: 100 116 139;
+    --atlas-critical: 220 38 38;
+    --atlas-high: 234 88 12;
+    --atlas-medium: 217 119 6;
+    --atlas-low: 2 132 199;
+    --atlas-info: 100 116 139;
+
+    --atlas-axis: 100 116 139;
+    --atlas-grid: 203 213 225;
+    --atlas-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 6px 20px rgba(15, 23, 42, 0.07);
+    --atlas-tooltip-shadow: 0 8px 24px rgba(15, 23, 42, 0.16);
+    --atlas-scroll-track: 244 246 249;
+    --atlas-scroll-thumb: 203 213 225;
+    --atlas-scroll-thumb-hover: 148 163 184;
   }
 
   html,
@@ -16,10 +72,12 @@
   body {
     @apply bg-base text-ink antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    transition: background-color 180ms ease, color 180ms ease;
   }
 
   ::selection {
-    @apply bg-accent/25 text-ink;
+    background: rgb(var(--atlas-accent) / 0.25);
+    color: rgb(var(--atlas-ink));
   }
 
   ::-webkit-scrollbar {
@@ -27,19 +85,19 @@
     height: 10px;
   }
   ::-webkit-scrollbar-track {
-    background: #0b0f14;
+    background: rgb(var(--atlas-scroll-track));
   }
   ::-webkit-scrollbar-thumb {
-    background: #26323f;
+    background: rgb(var(--atlas-scroll-thumb));
     border-radius: 999px;
-    border: 2px solid #0b0f14;
+    border: 2px solid rgb(var(--atlas-scroll-track));
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #334456;
+    background: rgb(var(--atlas-scroll-thumb-hover));
   }
 
   *:focus-visible {
-    outline: 2px solid rgba(54, 211, 153, 0.65);
+    outline: 2px solid rgb(var(--atlas-accent) / 0.65);
     outline-offset: 2px;
   }
 }
@@ -63,8 +121,8 @@
 
   .grid-lines {
     background-image:
-      linear-gradient(to right, rgba(36, 49, 64, 0.35) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(36, 49, 64, 0.35) 1px, transparent 1px);
+      linear-gradient(to right, rgb(var(--atlas-grid) / 0.35) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(var(--atlas-grid) / 0.35) 1px, transparent 1px);
     background-size: 48px 48px;
   }
 

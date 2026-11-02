@@ -22,8 +22,8 @@ type ButtonVariant = "primary" | "secondary" | "ghost" | "danger" | "outline";
 type ButtonSize = "sm" | "md" | "lg" | "icon";
 
 const buttonVariants: Record<ButtonVariant, string> = {
-  primary: "bg-accent text-[#04120C] hover:bg-[#4AE0AC] border border-accent/60",
-  secondary: "bg-raised text-ink border border-border-strong hover:bg-[#212D3B]",
+  primary: "bg-accent text-on-accent hover:brightness-110 border border-accent/60",
+  secondary: "bg-raised text-ink border border-border-strong hover:bg-border/40",
   ghost: "bg-transparent text-muted hover:text-ink hover:bg-raised/70 border border-transparent",
   danger: "bg-critical/15 text-critical border border-critical/35 hover:bg-critical/25",
   outline: "bg-transparent text-ink border border-border-strong hover:border-accent/50 hover:text-accent",
@@ -200,7 +200,7 @@ export function Checkbox({
           onChange={(event) => onChange(event.target.checked)}
           className="peer h-4 w-4 cursor-pointer appearance-none rounded border border-border-strong bg-base checked:border-accent checked:bg-accent"
         />
-        <Check className="pointer-events-none absolute h-3 w-3 text-[#04120C] opacity-0 peer-checked:opacity-100" strokeWidth={3} />
+        <Check className="pointer-events-none absolute h-3 w-3 text-on-accent opacity-0 peer-checked:opacity-100" strokeWidth={3} />
       </span>
       {label}
     </label>
@@ -245,7 +245,7 @@ export function Switch({
         <span
           className={cn(
             "pointer-events-none absolute left-[3px] top-1/2 h-3.5 w-3.5 -translate-y-1/2 rounded-full shadow-sm transition-transform duration-150",
-            checked ? "translate-x-[16px] bg-[#04120C]" : "translate-x-0 bg-muted",
+            checked ? "translate-x-[16px] bg-on-accent" : "translate-x-0 bg-muted",
           )}
         />
       </span>
