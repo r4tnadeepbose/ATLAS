@@ -18,7 +18,7 @@ different tools, normalizes it, connects it to the services and teams it belongs
 to, and turns it into one prioritized, auditable view.
 
 It is a working, locally runnable application — not a UI mockup. Dashboard
-metrics are computed from organization-scoped database records, and scammers
+metrics are computed from organization-scoped database records, and scanners
 never fabricate results.
 
 ![ATLAS Command Center](docs/screenshots/02-command-center-dark.png)
